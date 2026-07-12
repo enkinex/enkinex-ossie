@@ -2,4 +2,4 @@
 
 | Name                                                                                 | Company | Role on this project |
 |--------------------------------------------------------------------------------------|---------|----------------------| 
-| [Rodrigo de Alvarenga Mattos](https://www.linkedin.com/in/rodrigo-alvarenga-mattos/) | Enkinex | Data & AI Engineer   |
+| [Rodrigo de Alvarenga Mattos](https://www.linkedin.com/in/rodrigo-alvarenga-mattos/) | Enkinex | Engineer & Architect   |
