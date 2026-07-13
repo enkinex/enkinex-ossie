@@ -1,3 +1,5 @@
+[![Enkinex — Semantic & Governance as Code](docs/images/enkinex-github-banner.png)](https://enkinex.org)
+
 # Enkinex Ossie — Apache Ossie as Code Library
 
 [![Standard](https://img.shields.io/badge/Ossie-0.2.0.dev0-blue)](https://github.com/bitol-io/open-data-contract-standard/tree/v3.1.0)
