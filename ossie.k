@@ -11,6 +11,6 @@ schema SemanticModel:
     """
     version: ApiVersionType = "0.2.0.dev0"
 
-
     check:
         len(version) > 0, "version must not be empty"
+
