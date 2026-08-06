@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install KCL
+        run: wget -q https://kcl-lang.io/script/install-cli.sh -O - | /bin/bash
+
+      - uses: extractions/setup-just@v2
+
+      - name: kcl mod update
+        run: just init
+
+      - name: Run tests
+        run: just check
