@@ -35,8 +35,8 @@ All day-to-day tasks are `just` recipes defined in the [`Justfile`](Justfile):
 |--------------|------------------------------------------------------------------------------------------------------------------------------------------------|
 | `just init`  | Syncs module dependencies (`kcl mod update`).                                                                                                  |
 | `just fmt`   | Formats every `.k` file in the project (`kcl fmt ./...`).                                                                                      |
-| `just lint`  | Runs `kcl lint .` against the project.                                                                                                         |
-| `just test`  | Currently a **compile check** (`kcl run ossie.k`) — there are no `test/` fixtures yet. See [Where the schema is headed](#where-the-schema-is-headed). |
+| `just lint`  | Runs `kcl lint .` against the project and every module directory.                                                                              |
+| `just test`  | `kcl vet`s every fixture in `test/*.yaml` against `OssieDocument`.                                                                              |
 | `just docs`  | Regenerates the auto-generated schema reference from schema docstrings.                                                                        |
 | `just check` | Aggregate gate: formats, verifies the tree is still clean (`git diff --exit-code`), then runs `lint` and `test`. Run this before opening a PR. |
 
@@ -78,23 +78,24 @@ Branch names follow `<type>/<short-slug>`, using the same prefixes as above, e.g
    commits rather than force-pushes once a review is in progress, unless asked otherwise.
 5. PRs are squash-merged, so the PR title should itself read as a good commit message.
 
-## Where the schema is headed
+## Where to add a new schema
 
-This library is the earliest of the enkinex KCL libraries in its lifecycle: `ossie.k` currently models `SemanticModel`
-and its `version` field only, against [`ossie-schema.json`](ossie-schema.json) — itself a `.dev0` pre-release of the
-Apache Ossie spec. There is no module split yet; everything lives in the single root `ossie.k`.
+The library is organized as one KCL module per section of related Ossie definitions, mirroring the standard's JSON
+schema `$defs`. If you're adding a new field or schema, find its home in this table (see `docs/schemas/` for the full
+rationale behind each module):
 
-As the schema surface grows past a handful of fields, expect (and feel free to propose):
+| Module                 | Owns                                                                                     |
+|-------------------------|-------------------------------------------------------------------------------------------|
+| **`common`**            | `Dialect`, `DataType`, `Vendor`, `DialectExpression`, `Expression`, `AIContext`, `CustomExtension`, `isTimeEffective` |
+| **`catalog`**           | `Dataset`, `Field`, `Dimension`, `Relationship`                                            |
+| **`metric`**            | `Metric`                                                                                    |
+| **`model`**             | `SemanticModel`                                                                             |
+| **`ossie.k`** *(root)*  | The root **`OssieDocument`** schema that composes every module above                      |
 
-- Splitting related `$defs` sections of `ossie-schema.json` into their own KCL modules, mirroring how `enkinex-odcs`
-  organizes `catalog/`, `common/`, `contract/`, `iam/`, `quality/`, `server/`.
-- A `test/` directory of fixture YAML files, at which point `just test` should switch from a compile check to
-  `kcl vet`-ing those fixtures against the schema (see the `just test` recipe in the [`Justfile`](Justfile) for the
-  exact command to update).
-- A `docs/schemas/` directory documenting the design rationale for each module, once there is more than one.
-
-If you're adding a new field or schema today, it belongs in `ossie.k` unless you're also introducing the first module
-split — raise that as its own discussion before doing it as part of an unrelated change.
+The standard is a `.dev0` pre-release (`spec.md`: "schema may change before 0.2.0 is released"). Before adding a field,
+re-check it against upstream [`core-spec/spec.md`](https://github.com/apache/ossie/blob/main/core-spec/spec.md) and
+[`core-spec/osi-schema.json`](https://github.com/apache/ossie/blob/main/core-spec/osi-schema.json) — the vendored
+[`ossie-schema.json`](ossie-schema.json) is a snapshot and can drift.
 
 ## Docstrings and generated docs
 

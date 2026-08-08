@@ -2,20 +2,19 @@
 
 KCL library implementing the **Apache Ossie Core Metadata Specification
 0.2.0.dev0** as Governance-as-Code. Tracks the standard's JSON schema
-(`ossie-schema.json`).
-
-Earliest of the enkinex libraries in its lifecycle: `ossie.k` currently
-models `SemanticModel` and its `version` field only, against a specification
-that is itself a `.dev0` pre-release. Expect the schema surface to grow
-substantially, and expect the standard to move underneath it.
+(`ossie-schema.json`), itself a `.dev0` pre-release: expect the standard to
+move underneath this library.
 
 ## Repo map
 
 | Path | Purpose |
 |---|---|
-| `ossie.k` | Root `SemanticModel` schema; the whole library so far |
+| `ossie.k` | Root `OssieDocument` schema composing all modules |
+| `common/` `catalog/` `metric/` `model/` | One KCL module per specification section |
+| `test/*.yaml` | `kcl vet` fixtures validated against the schemas |
 | `ossie-schema.json` | The standard's JSON schema — the reference this library maps from |
 | `docs/library/ossie.md` | Generated schema reference (`just docs`) — regenerate on docstring change |
+| `docs/schemas/` | Per-module design rationale |
 
 ## Commands
 
@@ -23,18 +22,12 @@ substantially, and expect the standard to move underneath it.
 `just docs` · **`just check` — the gate every change must pass** (fmt +
 clean-tree + lint + test). Run `just fmt` and commit before `just check`.
 
-`just test` is a compile check, not `kcl vet`: this repo has no `test/`
-fixtures yet. Adding them, and switching `test` to vet them against
-`ossie-schema.json`, is the first thing that should happen when the schema
-surface grows beyond one field.
-
 ## Standards
 
 - Docstrings on every schema and field (they feed `just docs`): attribute
   line format, `required`/`optional` fidelity with the standard, inline
   `Examples:`.
-- `check` rules for enums/constraints; one module per specification section
-  once there is more than one.
+- `check` rules for enums/constraints; one module per specification section.
 - Contributing rules: [CONTRIBUTING.md](CONTRIBUTING.md) — branch
   `<type>/<short-slug>`, Conventional Commits subset, squash-merge.
 

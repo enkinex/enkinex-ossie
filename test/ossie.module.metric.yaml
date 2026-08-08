@@ -1,0 +1,33 @@
+# Test for the `metric` module: a minimal single-dataset aggregation and a
+# complete cross-dataset metric.
+version: 0.2.0.dev0
+semantic_model:
+  - name: metric_module_test
+    datasets:
+      - name: orders
+        source: sales.public.orders
+      - name: customers
+        source: sales.public.customers
+    metrics:
+      # Minimal metric: only the required name + expression.
+      - name: total_revenue
+        expression:
+          dialects:
+            - dialect: ANSI_SQL
+              expression: SUM(orders.amount)
+
+      # Complete metric: cross-dataset expression, description, datatype,
+      # ai_context and custom_extensions.
+      - name: avg_orders
+        expression:
+          dialects:
+            - dialect: ANSI_SQL
+              expression: SUM(orders.amount) / COUNT(DISTINCT customers.id)
+        description: Average orders
+        datatype: Decimal
+        ai_context:
+          synonyms:
+            - "Order Average by customer"
+        custom_extensions:
+          - vendor_name: GOODDATA
+            data: '{"maql_hint": "aggregation"}'

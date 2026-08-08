@@ -1,0 +1,46 @@
+# Test for the `common` module: Expression/DialectExpression (multi-dialect),
+# both AIContext forms (string and structured object, incl. an
+# additionalProperties-style extra key), and CustomExtension.
+version: 0.2.0.dev0
+semantic_model:
+  - name: common_module_test
+    description: Exercises Expression, AIContext and CustomExtension.
+    # Structured AIContext at the semantic model level, with an extra key
+    # beyond the three recommended ones (the standard's object form is
+    # additionalProperties: true).
+    ai_context:
+      instructions: "Use this model for common-module fidelity checks."
+      synonyms:
+        - "common test"
+      examples:
+        - "Show total sales last month"
+      internal_note: "not one of the three recommended keys, still accepted"
+    datasets:
+      - name: orders
+        source: sales.public.orders
+        fields:
+          # Minimal field: only the required name + expression.
+          - name: order_id
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: order_id
+
+          # Complete field: multi-dialect expression (one entry per dialect,
+          # no duplicates), a string-form AIContext, and custom_extensions.
+          - name: email_normalized
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: LOWER(email)
+                - dialect: SNOWFLAKE
+                  expression: LOWER(email)::VARCHAR
+                - dialect: BIGQUERY
+                  expression: SAFE_CAST(LOWER(email) AS STRING)
+            description: Normalized email address
+            ai_context: "email, normalized email, lowercase email"
+            custom_extensions:
+              - vendor_name: DBT
+                data: '{"materialized": "table"}'
+              - vendor_name: WISDOM
+                data: '{"tag": "pii"}'
