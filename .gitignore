@@ -11,7 +11,7 @@ Icon[
 ._*
 
 # Local Context
-.claude
+.claude/settings.local.json
 .context
 
 # IDEs
