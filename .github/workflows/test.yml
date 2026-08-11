@@ -13,7 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pinned deliberately. Unpinned, this step installs whatever shipped
+      # today, so the gate certifies "passes against the latest release"
+      # rather than a fixed toolchain — and `kcl fmt` is not stable across
+      # patch versions: 0.12.7 keeps a trailing blank line at the end of
+      # ossie.k and 0.12.8 strips it, so the two disagree about whether this
+      # repo is formatted. Bump this the way model pins are bumped: in a PR,
+      # with the fmt diff it produces committed alongside.
       - name: Install KCL
+        env:
+          KCL_VERSION: "0.12.7"
         run: wget -q https://kcl-lang.io/script/install-cli.sh -O - | /bin/bash
 
       - uses: extractions/setup-just@v2
