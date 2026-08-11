@@ -48,3 +48,4 @@ schema Expression:
     check:
         len(dialects) > 0, "dialects must contain at least one entry"
         len(dialects) == len({d.dialect: True for d in dialects}), "each dialect may appear at most once"
+
