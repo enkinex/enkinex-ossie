@@ -10,12 +10,10 @@ fmt:
     kcl fmt ./...
 
 lint:
-    kcl lint .
+    set -e; for d in . catalog common metric model; do (cd "$d" && kcl lint .); done
 
-# No `test/` fixtures exist yet, so the gate is that the module still
-# compiles. Replace with `kcl vet` over test/*.yaml once fixtures land.
 test:
-    kcl run ossie.k > /dev/null
+    set -e; for f in test/*.yaml; do kcl vet "$f" ossie.k --format yaml -s OssieDocument; done
 
 docs:
     kcl doc generate --escape-html --target docs/library

@@ -1,0 +1,93 @@
+# Test for the `catalog` module: Dataset (composite primary_key/unique_keys),
+# Field across every DataType, Dimension.is_time (set / omitted / explicit
+# false), and simple + composite Relationship.
+version: 0.2.0.dev0
+semantic_model:
+  - name: catalog_module_test
+    datasets:
+      # Minimal dataset: only the required name + source.
+      - name: orders
+        source: sales.public.orders
+
+      # Complete dataset: composite primary_key, multiple unique_keys
+      # (simple and composite), and one Field per DataType value.
+      - name: customers
+        source: sales.public.customers
+        primary_key: [order_id, line_number]
+        unique_keys:
+          - [email]
+          - [first_name, last_name]
+        description: Customer information
+        fields:
+          - name: full_name
+            expression:
+              dialects:
+                - dialect: ANSI_SQL
+                  expression: first_name || ' ' || last_name
+            datatype: String
+            description: Customer full name
+
+          - name: loyalty_points
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: loyalty_points }] }
+            datatype: Integer
+
+          - name: lifetime_value
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: lifetime_value }] }
+            datatype: Decimal
+
+          - name: churn_score
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: churn_score }] }
+            datatype: Float
+
+          - name: is_active
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: is_active }] }
+            datatype: Boolean
+
+          - name: signup_date
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: signup_date }] }
+            datatype: Date
+            # datatype is temporal; is_time omitted -> effective default is true.
+            dimension: {}
+
+          - name: preferred_contact_time
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: preferred_contact_time }] }
+            datatype: Time
+
+          - name: last_login_at
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: last_login_at }] }
+            datatype: DateTime
+            # Explicit opt-out of the temporal default: an audit timestamp,
+            # not intended for the time axis.
+            dimension:
+              is_time: false
+
+          - name: order_timestamp_tz
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: order_timestamp_tz }] }
+            datatype: DateTimeTz
+
+          - name: signup_year
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: signup_year }] }
+            datatype: Integer
+            # Non-temporal datatype (Integer); is_time: true makes the
+            # time-dimension role explicit.
+            dimension:
+              is_time: true
+
+          - name: external_ref
+            expression: { dialects: [{ dialect: ANSI_SQL, expression: external_ref }] }
+            # datatype omitted: Opaque / unknown type outside the portable vocabulary.
+
+    relationships:
+      # Simple relationship: single-column keys.
+      - name: orders_to_customers
+        from: orders
+        to: customers
+        from_columns: [customer_id]
+        to_columns: [id]
+
+      # Composite relationship: multi-column keys, order-matched.
+      - name: order_lines_to_products
+        from: order_lines
+        to: products
+        from_columns: [product_id, variant_id]
+        to_columns: [id, variant_id]
