@@ -55,4 +55,3 @@ schema SemanticModel:
         len(datasets) == len({d.name: True for d in datasets}), "dataset names must be unique within the semantic model"
         relationships == Undefined or len(relationships) == len({r.name: True for r in relationships}), "relationship names must be unique within the semantic model"
         metrics == Undefined or len(metrics) == len({m.name: True for m in metrics}), "metric names must be unique within the semantic model"
-

@@ -32,4 +32,3 @@ schema OssieDocument:
 
     check:
         len(version) > 0, "version must not be empty"
-

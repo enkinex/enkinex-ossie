@@ -56,4 +56,3 @@ schema Relationship:
         len(from_columns) > 0, "from_columns must contain at least one entry"
         len(to_columns) > 0, "to_columns must contain at least one entry"
         len(from_columns) == len(to_columns), "from_columns and to_columns must have the same length"
-
