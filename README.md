@@ -3,7 +3,7 @@
 # Enkinex Ossie — Apache Ossie as Code Library
 
 [![Standard](https://img.shields.io/badge/Ossie-0.2.0.dev0-blue)](https://github.com/apache/ossie)
-[![KCL](https://img.shields.io/badge/KCL-%E2%89%A5%200.12.4-7B68EE)](https://www.kcl-lang.io/)
+[![KCL](https://img.shields.io/badge/KCL-%E2%89%A5%200.12.8-7B68EE)](https://www.kcl-lang.io/)
 [![Version](https://img.shields.io/badge/version-0.2.0.dev0-orange)](./CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](./LICENSE)
 

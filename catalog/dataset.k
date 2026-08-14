@@ -53,4 +53,3 @@ schema Dataset:
 
     check:
         fields == Undefined or len(fields) == len({f.name: True for f in fields}), "field names must be unique within the dataset"
-

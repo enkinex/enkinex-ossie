@@ -22,4 +22,3 @@ schema CustomExtension:
     """
     vendor_name: enums.Vendor
     data: str
-

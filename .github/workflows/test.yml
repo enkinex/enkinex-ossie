@@ -13,17 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Pinned deliberately. Unpinned, this step installs whatever shipped
-      # today, so the gate certifies "passes against the latest release"
-      # rather than a fixed toolchain — and `kcl fmt` is not stable across
-      # patch versions: 0.12.7 keeps a trailing blank line at the end of
-      # ossie.k and 0.12.8 strips it, so the two disagree about whether this
-      # repo is formatted. Bump this the way model pins are bumped: in a PR,
-      # with the fmt diff it produces committed alongside.
+      # Pinned deliberately, and now for a second reason. Unpinned, this step
+      # installs whatever shipped today, so the gate certifies "passes against
+      # the latest release" rather than a fixed toolchain — and `kcl fmt` is
+      # not stable across patch versions: 0.12.7 kept a trailing blank line at
+      # the end of ossie.k and 0.12.8 strips it, so the two disagreed about
+      # whether this repo is formatted. AIOPS-16 moved the pin to 0.12.8 and
+      # committed that fmt diff alongside, which is how this bump is done.
+      #
+      # The second reason: unpinned, install-cli.sh resolves the version by
+      # calling the GitHub releases API *unauthenticated* — 60 requests an
+      # hour per IP, shared across every Actions runner — and exits 1 when it
+      # is rate-limited. That took enkinex-databricks CI red on 2026-08-14 on
+      # a PR touching two markdown files. `-v` skips the call entirely, so the
+      # pin removes the dependency rather than just fixing the version.
       - name: Install KCL
         env:
-          KCL_VERSION: "0.12.7"
-        run: wget -q https://kcl-lang.io/script/install-cli.sh -O - | /bin/bash
+          KCL_VERSION: "0.12.8"
+        run: curl -fsSL https://kcl-lang.io/script/install-cli.sh | bash -s -- -v "${KCL_VERSION}"
 
       - uses: extractions/setup-just@v2
 
