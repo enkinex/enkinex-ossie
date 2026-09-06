@@ -17,3 +17,13 @@ Icon[
 # IDEs
 .idea
 .vscode
+
+# Never stageable in a public repo — the pre-commit scan catches patterns,
+# this catches the file.
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
